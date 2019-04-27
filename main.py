@@ -16,7 +16,7 @@ def SummaryByName():
     return
 
 def NameBySummary():
-    genre,company,description,SearchQuoteIn,check,SearchQuote,platform = str(),str(),str(),str(),False,str(),str()
+    genre,company,description,check,SearchQuote,platform = str(),str(),str(),False,str(),str()
     genres = [
         'point-and-click',
         'fighting',
@@ -47,22 +47,35 @@ def NameBySummary():
             genre = str(input())
             for k in genres:
                 if SnowballStemmer('english').stem(k) in SnowballStemmer('english').stem(genre):
-                    SearchQuoteIn = "https://api-v3.igdb.com/genres/"+k+"/?search="
+                    SearchQuote = "https://api-v3.igdb.com/genres/"+k+"&fields=name,platform,summary" 
                     check = True
-            if SearchQuote == None:
+            if check == False:
                 print('I do not know this genre. Repeat pls.')
     else:
-        SearchQuoteIn = "https://api-v3.igdb.com/"
+        SearchQuote = "https://api-v3.igdb.com/games/&fields=name,platform,summary"
     if SnowballStemmer('english').stem('platform') in ch:
         print('Enter platform:')
         platform = str(input())
-        SearchQuote += ',platform'
     if SnowballStemmer('english').stem('description') in ch:
         print('Enter description:')
         description = str(input())
-        SearchQuote += ',description'
-    
-    return
+    r = requests.get(SearchQuote,headers=headers).json()
+    print("I found this:") 
+    for block in r:
+        if description!=str() and platform==str():
+            if description in block:
+                print(block.get(name)+\n)
+                print(block.get(summary)+\n\n)
+        elif description==str() and platform!=str():
+            if platform in block:
+                print(block.get(name)+\n)
+                print(block.get(summary)+\n\n)
+        elif description!=str() add platform!=str():
+            if description in block and platform in block:
+                print(block.get(name)+\n)
+                print(block.get(summary)+\n\n)
+        else:
+            print("I can't help you if you know nothing") 
 
 ch = str()  #input var
 check = False  #check var, used in algoryphm cycling
