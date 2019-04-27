@@ -9,6 +9,7 @@ headers = {
 def SummaryByName():
     print('Enter name please')
     r = requests.get("https://api-v3.igdb.com/games/?search="+str(input())+"&fields=name,summary", headers = headers).json()
+
     for i in r:
         print(i.get('name')+'\n')
         print(i.get('summary')+'\n\n')
@@ -38,7 +39,7 @@ def NameBySummary():
         'indie',
         'arcade'
     ]
-    print('Which parameters of game do you know?\n(Such as genre, company (developer or publisher),platform or short description)')
+    print('Which parameters of game do you know?\n(Such as genre, platform or short description)')
     ch = SnowballStemmer('english').stem(str(input()))
     if SnowballStemmer('english').stem('genre') in ch:
         while check == False:
@@ -46,17 +47,12 @@ def NameBySummary():
             genre = str(input())
             for k in genres:
                 if SnowballStemmer('english').stem(k) in SnowballStemmer('english').stem(genre):
-                    SearchQuoteIn = "https://api-v3.igdb.com/genres/"+k
+                    SearchQuoteIn = "https://api-v3.igdb.com/genres/"+k+"/?search="
                     check = True
             if SearchQuote == None:
                 print('I do not know this genre. Repeat pls.')
     else:
         SearchQuoteIn = "https://api-v3.igdb.com/"
-    if SnowballStemmer('english').stem('company') in ch:
-        print('Enter company:')
-        company = str(input())                                  #TODO
-        if  SearchQuoteIn == "https://api-v3.igdb.com/"
-        SearchQuote += ',company'
     if SnowballStemmer('english').stem('platform') in ch:
         print('Enter platform:')
         platform = str(input())
@@ -70,9 +66,9 @@ def NameBySummary():
 
 ch = str()  #input var
 check = False  #check var, used in algoryphm cycling
-print('Hello!\nI can search for specific game or show you summary of any game.\nChoose please.')
+print('Hello!\nI can recommend you a game or show you summary of any game.\nChoose please.')
 while check == False:
-    ch = SnowballStemmer('english').stem(str(input()))
+    ch = SnowballStemmer('english').stem(str(input())).split()
     if SnowballStemmer('english').stem('summary') in ch:
         SummaryByName()
         check = True
@@ -81,3 +77,4 @@ while check == False:
         check = True
     else:
         print('Sorry, I cannot understand you. Repeat please')
+
